@@ -1,15 +1,12 @@
 package com.server.lms.category.dto.response;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-public class CategoryResponseDTO {
-
+public class CategoryTreeResponse {
     private String id;
 
     private String name;
@@ -25,6 +22,8 @@ public class CategoryResponseDTO {
     private String parentCategoryId;
 
     private String parentCategoryName;
+
+    private List<CategoryTreeResponse> subCategories;
 
     private LocalDateTime createdDate;
 

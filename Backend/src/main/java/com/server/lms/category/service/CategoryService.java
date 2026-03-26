@@ -1,34 +1,34 @@
 package com.server.lms.category.service;
 
-import com.server.lms.category.dto.request.CategoryRequestDTO;
-import com.server.lms.category.dto.response.CategoryResponseDTO;
-import com.server.lms.category.dto.response.CategoryTreeResponseDTO;
+import com.server.lms.category.dto.request.CategoryRequest;
+import com.server.lms.category.dto.response.CategoryResponse;
+import com.server.lms.category.dto.response.CategoryTreeResponse;
 import com.server.lms.category.entity.Category;
 
 import java.util.List;
 
 public interface CategoryService {
     // CRUD
-    CategoryTreeResponseDTO create(CategoryRequestDTO dto);
+    CategoryTreeResponse create(CategoryRequest dto);
 
-    CategoryTreeResponseDTO update(String id, CategoryRequestDTO dto);
+    CategoryTreeResponse update(String id, CategoryRequest dto);
 
     void delete(String id);
 
-    CategoryTreeResponseDTO findById(String id);
+    CategoryTreeResponse findById(String id);
 
-    List<CategoryResponseDTO> findAll();
+    List<CategoryResponse> findAll();
 
-    List<CategoryResponseDTO> findAllRoots();
+    List<CategoryResponse> findAllRoots();
 
-    List<CategoryTreeResponseDTO> getTree();
+    List<CategoryTreeResponse> getTree();
 
-    List<CategoryResponseDTO> findSubCategories(String parentId);
+    List<CategoryResponse> findSubCategories(String parentId);
 
     // Status management
-    CategoryTreeResponseDTO updateCategoryStatus(String id, boolean isActive);
+    CategoryTreeResponse updateCategoryStatus(String id, boolean isActive);
 
-    List<CategoryResponseDTO> findAllActiveCategories();
+    List<CategoryResponse> findAllActiveCategories();
 
     // Statistics
     Long countActiveCategories();

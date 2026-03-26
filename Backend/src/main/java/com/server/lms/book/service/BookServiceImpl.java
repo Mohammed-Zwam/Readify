@@ -1,9 +1,9 @@
 package com.server.lms.book.service;
 
-import com.server.lms.book.dto.request.BookRequestDTO;
-import com.server.lms.book.dto.request.BookSearchRequestDTO;
-import com.server.lms.book.dto.response.BookResponseDTO;
-import com.server.lms.book.dto.response.BookStatisticsResponseDTO;
+import com.server.lms.book.dto.request.BookRequest;
+import com.server.lms.book.dto.request.BookSearchRequest;
+import com.server.lms.book.dto.response.BookResponse;
+import com.server.lms.book.dto.response.BookStatisticsResponse;
 import com.server.lms.book.entity.Book;
 import com.server.lms.book.mapper.BookMapper;
 import com.server.lms.book.repository.BookRepository;
@@ -27,17 +27,17 @@ public class BookServiceImpl implements BookService {
     private final BookMapper bookMapper;
 
 
-    public BookResponseDTO create(BookRequestDTO dto) {
+    public BookResponse create(BookRequest dto) {
         Book book = bookMapper.toEntity(dto);
         return bookMapper.toBookResponseDTO(bookRepository.save(book));
     }
 
-    public List<BookResponseDTO> createAll(List<BookRequestDTO> dtoList) {
+    public List<BookResponse> createAll(List<BookRequest> dtoList) {
         List<Book> books = bookMapper.toEntities(dtoList);
         return bookMapper.toBookResponseDTOs(bookRepository.saveAll(books));
     }
 
-    public BookResponseDTO update(String id, BookRequestDTO dto) {
+    public BookResponse update(String id, BookRequest dto) {
         Book existingBook = findEntityById(id);
         bookMapper.toEntity(existingBook, dto);
         return bookMapper.toBookResponseDTO(bookRepository.save(existingBook));
@@ -48,23 +48,23 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(id);
     }
 
-    public BookResponseDTO findById(String id) {
+    public BookResponse findById(String id) {
         return bookMapper.toBookResponseDTO(findEntityById(id));
     }
 
-    public List<BookResponseDTO> findAll() {
+    public List<BookResponse> findAll() {
         return bookMapper.toBookResponseDTOs(bookRepository.findAll());
     }
 
 
-    public BookResponseDTO changeBookStatus(String id, boolean isActive) {
+    public BookResponse changeBookStatus(String id, boolean isActive) {
         Book book = this.findEntityById(id);
         book.setIsActive(isActive);
         return bookMapper.toBookResponseDTO(bookRepository.save(book));
     }
 
-    public PageResponse<BookResponseDTO> searchBooksByFilters(
-            BookSearchRequestDTO searchRequest
+    public PageResponse<BookResponse> searchBooksByFilters(
+            BookSearchRequest searchRequest
     ) {
         Specification<Book> spec = Specification
                 .where(BookSpecification.hasTitle(searchRequest.getSearchTerm()))
@@ -76,7 +76,7 @@ public class BookServiceImpl implements BookService {
 
         Page<Book> result = bookRepository.findAll(spec, pageable);
 
-        return PageResponse.<BookResponseDTO>builder()
+        return PageResponse.<BookResponse>builder()
                 .content(bookMapper.toBookResponseDTOs(result.getContent()))
                 .pageNumber(result.getNumber())
                 .pageSize(result.getSize())
@@ -89,8 +89,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookStatisticsResponseDTO getBookStatistics() {
-        return BookStatisticsResponseDTO.builder()
+    public BookStatisticsResponse getBookStatistics() {
+        return BookStatisticsResponse.builder()
                 .totalActiveBooks(bookRepository.countByIsActiveTrue())
                 .totalAvailableBooks(bookRepository.countAvailableBooks())
                 .build();
@@ -98,7 +98,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public BookResponseDTO findByIsbn(String isbn) {
+    public BookResponse findByIsbn(String isbn) {
         return bookMapper.toBookResponseDTO(
                 bookRepository.findByIsbn(isbn).orElseThrow(() -> new EntityNotFoundException("Book not found with ISBN: " + isbn))
         );
@@ -114,7 +114,7 @@ public class BookServiceImpl implements BookService {
                 ));
     }
 
-    private Pageable getPageable(BookSearchRequestDTO searchRequest) {
+    private Pageable getPageable(BookSearchRequest searchRequest) {
         int size = searchRequest.getSize();
         size = Math.min(size, 20);
         size = Math.max(size, 1);

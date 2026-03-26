@@ -2,7 +2,9 @@ package com.server.lms.security.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -75,6 +77,15 @@ public class JwtUtils {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userEmail = extractUserEmail(token);
         return (userEmail.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    public boolean isTokenSignatureCorrect(String token) {
+        try {
+            Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class BookStatisticsResponseDTO {
+public class BookStatisticsResponse {
     private Long totalActiveBooks;
     private Long totalAvailableBooks;
 }

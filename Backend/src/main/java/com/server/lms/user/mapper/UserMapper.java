@@ -20,6 +20,8 @@ public abstract class UserMapper {
 
     abstract public UserDTO toDTO(User user);
 
+    abstract public User toEntity(@MappingTarget User user, UserDTO dto);
+
     @Named("passwordEncoding")
     String passwordEncoding(String password) {
         if (password == null) return null;

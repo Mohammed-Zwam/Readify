@@ -3,10 +3,10 @@ package com.server.lms.category.dto.response;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
-public class CategoryTreeResponseDTO {
+public class CategoryResponse {
+
     private String id;
 
     private String name;
@@ -22,8 +22,6 @@ public class CategoryTreeResponseDTO {
     private String parentCategoryId;
 
     private String parentCategoryName;
-
-    private List<CategoryTreeResponseDTO> subCategories;
 
     private LocalDateTime createdDate;
 

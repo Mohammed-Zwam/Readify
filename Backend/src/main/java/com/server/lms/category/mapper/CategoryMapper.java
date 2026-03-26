@@ -1,8 +1,8 @@
 package com.server.lms.category.mapper;
 
-import com.server.lms.category.dto.request.CategoryRequestDTO;
-import com.server.lms.category.dto.response.CategoryResponseDTO;
-import com.server.lms.category.dto.response.CategoryTreeResponseDTO;
+import com.server.lms.category.dto.request.CategoryRequest;
+import com.server.lms.category.dto.response.CategoryResponse;
+import com.server.lms.category.dto.response.CategoryTreeResponse;
 import com.server.lms.category.entity.Category;
 import com.server.lms.category.service.CategoryService;
 import org.mapstruct.*;
@@ -27,26 +27,26 @@ public abstract class CategoryMapper {
             @Mapping(source = "parentCategory.id", target = "parentCategoryId"),
             @Mapping(source = "parentCategory.name", target = "parentCategoryName")
     })
-    public abstract CategoryTreeResponseDTO toCategoryTreeDTO(Category entity);
+    public abstract CategoryTreeResponse toCategoryTreeDTO(Category entity);
 
 
     @Mappings({
             @Mapping(source = "parentCategory.id", target = "parentCategoryId"),
             @Mapping(source = "parentCategory.name", target = "parentCategoryName")
     })
-    public abstract CategoryResponseDTO toCategoryDTO(Category entity);
+    public abstract CategoryResponse toCategoryDTO(Category entity);
 
 
-    public abstract List<CategoryResponseDTO> toCategoryDTOs(List<Category> categories);
+    public abstract List<CategoryResponse> toCategoryDTOs(List<Category> categories);
 
-    public abstract List<CategoryTreeResponseDTO> toCategoryTreeDTOs(List<Category> categories);
+    public abstract List<CategoryTreeResponse> toCategoryTreeDTOs(List<Category> categories);
 
 
     @Mappings({
             @Mapping(ignore = true, target = "createdDate"),
             @Mapping(ignore = true, target = "updatedDate"),
     })
-    public abstract Category toEntity(CategoryRequestDTO dto);
+    public abstract Category toEntity(CategoryRequest dto);
 
     @Mappings({
             @Mapping(ignore = true, target = "createdDate"),
@@ -54,11 +54,11 @@ public abstract class CategoryMapper {
     })
 
 
-    public abstract Category toEntity(@MappingTarget Category category, CategoryRequestDTO dto);
+    public abstract Category toEntity(@MappingTarget Category category, CategoryRequest dto);
 
 
     @AfterMapping
-    void getParentCategory(CategoryRequestDTO dto, @MappingTarget Category entity) {
+    void getParentCategory(CategoryRequest dto, @MappingTarget Category entity) {
         if (dto.getParentCategoryId() == null) {
             entity.setParentCategory(null);
         } else {

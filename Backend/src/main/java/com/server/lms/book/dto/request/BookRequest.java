@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-public class BookRequestDTO {
+public class BookRequest {
 
     @Size(max = 20)
     @NotBlank(message = "Book isbn is required")

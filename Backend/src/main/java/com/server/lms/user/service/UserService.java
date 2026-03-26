@@ -7,5 +7,9 @@ public interface UserService {
 
     User create(UserDTO dto);
 
+    User update(String id, UserDTO dto);
+
+    User update(User user);
+
     User findEntityByEmail(String email);
 }

@@ -1,4 +1,4 @@
-package com.server.lms.auth.dto;
+package com.server.lms.auth.dto.response;
 
 import com.server.lms.user.dto.UserDTO;
 import lombok.AllArgsConstructor;

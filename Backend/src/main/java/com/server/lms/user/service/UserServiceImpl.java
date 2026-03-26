@@ -25,6 +25,19 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userMapper.toEntity(dto));
     }
 
+
+    @Override
+    public User update(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User update(String id, UserDTO dto) {
+        return update(
+                userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found!"))
+        );
+    }
+
     //=========== HELPERS ===========//
     public User findEntityByEmail(String email) {
         return userRepository.findByEmail(email)

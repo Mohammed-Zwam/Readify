@@ -1,9 +1,9 @@
 package com.server.lms.category.service;
 
 
-import com.server.lms.category.dto.request.CategoryRequestDTO;
-import com.server.lms.category.dto.response.CategoryResponseDTO;
-import com.server.lms.category.dto.response.CategoryTreeResponseDTO;
+import com.server.lms.category.dto.request.CategoryRequest;
+import com.server.lms.category.dto.response.CategoryResponse;
+import com.server.lms.category.dto.response.CategoryTreeResponse;
 import com.server.lms.category.entity.Category;
 import com.server.lms.category.mapper.CategoryMapper;
 import com.server.lms.category.repository.CategoryRepository;
@@ -19,12 +19,12 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public CategoryTreeResponseDTO create(CategoryRequestDTO dto) {
+    public CategoryTreeResponse create(CategoryRequest dto) {
         Category category = categoryMapper.toEntity(dto);
         return categoryMapper.toCategoryTreeDTO(categoryRepository.save(category));
     }
 
-    public CategoryTreeResponseDTO update(String id, CategoryRequestDTO dto) {
+    public CategoryTreeResponse update(String id, CategoryRequest dto) {
         Category existingCategory = this.findEntityById(id, "Category");
         categoryMapper.toEntity(existingCategory, dto);
         return categoryMapper.toCategoryTreeDTO(categoryRepository.save(existingCategory));
@@ -35,38 +35,38 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    public CategoryTreeResponseDTO findById(String id) {
+    public CategoryTreeResponse findById(String id) {
         Category category = this.findEntityById(id, "Category");
         return categoryMapper.toCategoryTreeDTO(category);
     }
 
-    public List<CategoryResponseDTO> findAll() {
+    public List<CategoryResponse> findAll() {
         return categoryMapper.toCategoryDTOs(categoryRepository.findAll());
     }
 
 
-    public List<CategoryResponseDTO> findAllRoots() {
+    public List<CategoryResponse> findAllRoots() {
         return categoryMapper.toCategoryDTOs(findRootEntities());
     }
 
-    public List<CategoryTreeResponseDTO> getTree() {
+    public List<CategoryTreeResponse> getTree() {
         return categoryMapper.toCategoryTreeDTOs(findRootEntities());
     }
 
 
-    public List<CategoryResponseDTO> findSubCategories(String parentId) {
+    public List<CategoryResponse> findSubCategories(String parentId) {
         return categoryMapper.toCategoryDTOs(
                 categoryRepository.findByParentCategoryIdAndIsActiveTrueOrderByDisplayOrderAsc(parentId)
         );
     }
 
-    public List<CategoryResponseDTO> findAllActiveCategories() {
+    public List<CategoryResponse> findAllActiveCategories() {
         return categoryMapper.toCategoryDTOs(
                 categoryRepository.findByIsActiveTrueOrderByDisplayOrderAsc()
         );
     }
 
-    public CategoryTreeResponseDTO updateCategoryStatus(String id, boolean isActive) {
+    public CategoryTreeResponse updateCategoryStatus(String id, boolean isActive) {
         Category category = this.findEntityById(id, "Category");
         category.setIsActive(isActive);
         return categoryMapper.toCategoryTreeDTO(categoryRepository.save(category));

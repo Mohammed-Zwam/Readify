@@ -1,8 +1,8 @@
 package com.server.lms.category.controller;
 
-import com.server.lms.category.dto.request.CategoryRequestDTO;
-import com.server.lms.category.dto.response.CategoryResponseDTO;
-import com.server.lms.category.dto.response.CategoryTreeResponseDTO;
+import com.server.lms.category.dto.request.CategoryRequest;
+import com.server.lms.category.dto.response.CategoryResponse;
+import com.server.lms.category.dto.response.CategoryTreeResponse;
 import com.server.lms.category.service.CategoryService;
 import com.server.lms._shared.dto.ApiResponse;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        ApiResponse.<List<CategoryResponseDTO>>builder()
+                        ApiResponse.<List<CategoryResponse>>builder()
                                 .data(categoryService.findAll())
                                 .message("Categories Retrieved Successfully")
                                 .success(true)
@@ -38,7 +38,7 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        ApiResponse.<List<CategoryResponseDTO>>builder()
+                        ApiResponse.<List<CategoryResponse>>builder()
                                 .data(categoryService.findAllRoots())
                                 .message("Root Categories Retrieved Successfully")
                                 .success(true)
@@ -51,7 +51,7 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        ApiResponse.<List<CategoryTreeResponseDTO>>builder()
+                        ApiResponse.<List<CategoryTreeResponse>>builder()
                                 .data(categoryService.getTree())
                                 .message("Categories Tree Retrieved Successfully")
                                 .success(true)
@@ -67,7 +67,7 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        ApiResponse.<List<CategoryResponseDTO>>builder()
+                        ApiResponse.<List<CategoryResponse>>builder()
                                 .data(categoryService.findSubCategories(parentId))
                                 .message("Sub-Categories Retrieved Successfully")
                                 .success(true)
@@ -80,7 +80,7 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        ApiResponse.<List<CategoryResponseDTO>>builder()
+                        ApiResponse.<List<CategoryResponse>>builder()
                                 .data(categoryService.findAllActiveCategories())
                                 .message("Active Categories Retrieved Successfully")
                                 .success(true)
@@ -96,7 +96,7 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        ApiResponse.<CategoryTreeResponseDTO>builder()
+                        ApiResponse.<CategoryTreeResponse>builder()
                                 .data(categoryService.findById(id))
                                 .message("Category Retrieved Successfully")
                                 .success(true)
@@ -107,12 +107,12 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<?>> create(
-            @RequestBody @Valid CategoryRequestDTO dto
+            @RequestBody @Valid CategoryRequest dto
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
-                        ApiResponse.<CategoryTreeResponseDTO>builder()
+                        ApiResponse.<CategoryTreeResponse>builder()
                                 .data(categoryService.create(dto))
                                 .message("Category created successfully")
                                 .success(true)
@@ -124,12 +124,12 @@ public class CategoryController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> update(
             @PathVariable @NotBlank String id,
-            @RequestBody @Valid CategoryRequestDTO dto
+            @RequestBody @Valid CategoryRequest dto
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        ApiResponse.<CategoryTreeResponseDTO>builder()
+                        ApiResponse.<CategoryTreeResponse>builder()
                                 .data(categoryService.update(id, dto))
                                 .message("Category updated successfully")
                                 .success(true)
@@ -161,7 +161,7 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        ApiResponse.<CategoryTreeResponseDTO>builder()
+                        ApiResponse.<CategoryTreeResponse>builder()
                                 .data(categoryService.updateCategoryStatus(id, false))
                                 .message("Category Deactivated Successfully")
                                 .success(true)

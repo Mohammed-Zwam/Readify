@@ -1,7 +1,7 @@
 package com.server.lms.book.mapper;
 
-import com.server.lms.book.dto.request.BookRequestDTO;
-import com.server.lms.book.dto.response.BookResponseDTO;
+import com.server.lms.book.dto.request.BookRequest;
+import com.server.lms.book.dto.response.BookResponse;
 import com.server.lms.book.entity.Book;
 import com.server.lms.book.repository.BookRepository;
 import com.server.lms.category.entity.Category;
@@ -27,20 +27,20 @@ public abstract class BookMapper {
     @Autowired
     private BookRepository bookRepository;
 
-    public abstract BookResponseDTO toBookResponseDTO(Book book);
+    public abstract BookResponse toBookResponseDTO(Book book);
 
-    public abstract Book toEntity(BookRequestDTO dto);
+    public abstract Book toEntity(BookRequest dto);
 
-    public abstract Book toEntity(BookResponseDTO dto);
+    public abstract Book toEntity(BookResponse dto);
 
-    public abstract Book toEntity(@MappingTarget Book book, BookRequestDTO dto);
+    public abstract Book toEntity(@MappingTarget Book book, BookRequest dto);
 
-    public abstract List<Book> toEntities(List<BookRequestDTO> dtoList);
+    public abstract List<Book> toEntities(List<BookRequest> dtoList);
 
-    public abstract List<BookResponseDTO> toBookResponseDTOs(List<Book> books);
+    public abstract List<BookResponse> toBookResponseDTOs(List<Book> books);
 
     @AfterMapping
-    public void validateCategory(BookRequestDTO dto, @MappingTarget Book book) {
+    public void validateCategory(BookRequest dto, @MappingTarget Book book) {
         if (dto.getCategoryId() == null) {
             book.setCategory(null);
         } else {

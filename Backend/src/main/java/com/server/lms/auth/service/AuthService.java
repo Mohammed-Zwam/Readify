@@ -1,10 +1,11 @@
 package com.server.lms.auth.service;
 
-import com.server.lms.auth.dto.AuthResponse;
+import com.server.lms.auth.dto.request.LoginRequest;
+import com.server.lms.auth.dto.response.AuthResponse;
 import com.server.lms.user.dto.UserDTO;
 
 public interface AuthService {
-    AuthResponse login(String email, String password);
+    AuthResponse login(LoginRequest loginRequest);
 
     AuthResponse signup(UserDTO user);
 

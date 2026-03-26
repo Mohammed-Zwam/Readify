@@ -1,13 +1,13 @@
 package com.server.lms.book.dto.response;
 
-import com.server.lms.category.dto.response.CategoryResponseDTO;
+import com.server.lms.category.dto.response.CategoryResponse;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-public class BookResponseDTO {
+public class BookResponse {
 
     private String id;
 
@@ -17,7 +17,7 @@ public class BookResponseDTO {
 
     private String author;
 
-    private CategoryResponseDTO category;
+    private CategoryResponse category;
 
     private String publisher;
 

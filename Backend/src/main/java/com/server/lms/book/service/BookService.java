@@ -1,33 +1,33 @@
 package com.server.lms.book.service;
 
-import com.server.lms.book.dto.request.BookRequestDTO;
-import com.server.lms.book.dto.request.BookSearchRequestDTO;
-import com.server.lms.book.dto.response.BookResponseDTO;
-import com.server.lms.book.dto.response.BookStatisticsResponseDTO;
+import com.server.lms.book.dto.request.BookRequest;
+import com.server.lms.book.dto.request.BookSearchRequest;
+import com.server.lms.book.dto.response.BookResponse;
+import com.server.lms.book.dto.response.BookStatisticsResponse;
 import com.server.lms._shared.dto.PageResponse;
 
 import java.util.List;
 
 public interface BookService {
     // CRUD
-    BookResponseDTO create(BookRequestDTO dto);
+    BookResponse create(BookRequest dto);
 
-    BookResponseDTO update(String id, BookRequestDTO dto);
+    BookResponse update(String id, BookRequest dto);
 
     void delete(String id);
 
-    BookResponseDTO findById(String id);
+    BookResponse findById(String id);
 
-    List<BookResponseDTO> findAll();
+    List<BookResponse> findAll();
 
-    List<BookResponseDTO> createAll(List<BookRequestDTO> dtoList);
+    List<BookResponse> createAll(List<BookRequest> dtoList);
 
-    BookResponseDTO changeBookStatus(String id, boolean isActive);
+    BookResponse changeBookStatus(String id, boolean isActive);
 
     // Search with filters and pagination
-    PageResponse<BookResponseDTO> searchBooksByFilters(BookSearchRequestDTO searchRequest);
+    PageResponse<BookResponse> searchBooksByFilters(BookSearchRequest searchRequest);
 
-    BookStatisticsResponseDTO getBookStatistics();
+    BookStatisticsResponse getBookStatistics();
 
-    BookResponseDTO findByIsbn(String isbn);
+    BookResponse findByIsbn(String isbn);
 }

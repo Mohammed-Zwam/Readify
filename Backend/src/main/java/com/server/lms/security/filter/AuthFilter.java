@@ -38,23 +38,28 @@ public class AuthFilter extends OncePerRequestFilter {
         String jwtTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (jwtTokenHeader != null && jwtTokenHeader.startsWith("Bearer ")) {
             String jwtToken = jwtTokenHeader.substring("Bearer ".length());
-            String userEmail = jwtUtils.extractUserEmail(jwtToken);
 
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (jwtUtils.isTokenSignatureCorrect(jwtToken)) {
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+                String userEmail = jwtUtils.extractUserEmail(jwtToken);
 
-                if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
+                if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                    Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-                    Authentication auth = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, authorities
-                    );
+                    if (jwtUtils.isTokenValid(jwtToken, userDetails)) {
 
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+
+                        Authentication auth = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, authorities
+                        );
+
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                    }
                 }
             }
+
         }
 
         filterChain.doFilter(request, response);

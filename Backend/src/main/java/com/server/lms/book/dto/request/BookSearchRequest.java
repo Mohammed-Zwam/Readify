@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookSearchRequestDTO {
+public class BookSearchRequest {
     private String searchTerm;
     private String categoryId;
     private Boolean availableOnly;

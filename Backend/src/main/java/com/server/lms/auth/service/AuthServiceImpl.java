@@ -1,6 +1,8 @@
 package com.server.lms.auth.service;
 
-import com.server.lms.auth.dto.AuthResponse;
+import com.server.lms._shared.email.EmailService;
+import com.server.lms.auth.dto.request.LoginRequest;
+import com.server.lms.auth.dto.response.AuthResponse;
 import com.server.lms.security.utils.JwtUtils;
 import com.server.lms.user.dto.UserDTO;
 import com.server.lms.user.entity.PasswordResetToken;
@@ -8,12 +10,15 @@ import com.server.lms.user.entity.User;
 import com.server.lms.user.mapper.UserMapper;
 import com.server.lms.user.repository.PasswordResetTokenRepository;
 import com.server.lms.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,6 +26,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Log
 public class AuthServiceImpl implements AuthService {
 
     private final UserService userService;
@@ -28,6 +34,8 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${spring.security.reset_password.url}")
     private String resetPasswordUrl;
@@ -36,15 +44,15 @@ public class AuthServiceImpl implements AuthService {
     private Integer expiration;
 
     @Override
-    public AuthResponse login(String email, String password) {
+    public AuthResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        email,
-                        password
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
                 )
         );
 
-        var user = userService.findEntityByEmail(email);
+        var user = userService.findEntityByEmail(loginRequest.getEmail());
         var jwtToken = jwtUtils.generateToken(user);
 
         return AuthResponse.builder()
@@ -80,28 +88,46 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void createPasswordResetToken(String email) {
-
-
         User user = userService.findEntityByEmail(email);
+
+
         String generatedToken = UUID.randomUUID().toString();
         var resetToken = PasswordResetToken.builder()
                 .token(generatedToken)
                 .user(user)
-                .expiryDate(LocalDateTime.now().plusMinutes(expiration))
+                .expiryDate(LocalDateTime.now().plusMinutes(expiration + 2 /* SUPPOSE NETWORK DELAY */))
                 .build();
 
-        passwordResetTokenRepository.save(resetToken);
-        String resetLink = resetPasswordUrl + generatedToken;
-        String emailSubject = "Password Reset Request";
-        String emailBody = "You requested to reset your password. User this Link to reset (expired after " + expiration + " minutes)";
 
-        // TODO: SEND EMAIL
-        // TODO: DELETE OLD TOKEN
+        try {
+            passwordResetTokenRepository.save(resetToken);
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed To Save Token, " + ex.getMessage());
+        }
+
+        String resetLink = resetPasswordUrl + generatedToken;
+
+        String emailSubject = "Password Reset Request";
+        String emailBody = "You requested to reset your password, <a href='" + resetLink + "'>Click Here</a> to reset (expired after " + expiration + " minutes)";
+        emailService.sendEmail(email, emailSubject, emailBody);
     }
 
     @Override
+    @Transactional // rollback when occur any exception
     public void resetPassword(String token, String newPassword) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token).
+                orElseThrow(() -> new RuntimeException("Invalid Token"));
 
+        if (passwordResetToken.isExpired()) {
+            passwordResetTokenRepository.delete(passwordResetToken);
+            throw new RuntimeException("Token Expired, Please Request Again");
+        }
+
+
+        User user = passwordResetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userService.update(user);
+        passwordResetTokenRepository.delete(passwordResetToken);
     }
 
 

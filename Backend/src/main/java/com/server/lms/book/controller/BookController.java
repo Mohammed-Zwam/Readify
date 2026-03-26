@@ -1,9 +1,9 @@
 package com.server.lms.book.controller;
 
-import com.server.lms.book.dto.request.BookRequestDTO;
-import com.server.lms.book.dto.request.BookSearchRequestDTO;
-import com.server.lms.book.dto.response.BookResponseDTO;
-import com.server.lms.book.dto.response.BookStatisticsResponseDTO;
+import com.server.lms.book.dto.request.BookRequest;
+import com.server.lms.book.dto.request.BookSearchRequest;
+import com.server.lms.book.dto.response.BookResponse;
+import com.server.lms.book.dto.response.BookStatisticsResponse;
 import com.server.lms.book.service.BookService;
 import com.server.lms._shared.dto.ApiResponse;
 import com.server.lms._shared.dto.PageResponse;
@@ -26,7 +26,7 @@ public class BookController {
     @GetMapping
     public ResponseEntity<ApiResponse<?>> findAllBooks() {
         return ResponseEntity.status(HttpStatus.OK).body(
-                ApiResponse.<List<BookResponseDTO>>builder()
+                ApiResponse.<List<BookResponse>>builder()
                         .success(true)
                         .data(bookService.findAll())
                         .message("Books fetched successfully")
@@ -36,10 +36,10 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<?>> createBook(
-            @RequestBody @Valid BookRequestDTO dto
+            @RequestBody @Valid BookRequest dto
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                ApiResponse.<BookResponseDTO>builder()
+                ApiResponse.<BookResponse>builder()
                         .success(true)
                         .data(bookService.create(dto))
                         .message("Book created successfully")
@@ -50,10 +50,10 @@ public class BookController {
 
     @PostMapping("/batch")
     public ResponseEntity<ApiResponse<?>> createBooks(
-            @RequestBody @Valid List<BookRequestDTO> dtoList
+            @RequestBody @Valid List<BookRequest> dtoList
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                ApiResponse.<List<BookResponseDTO>>builder()
+                ApiResponse.<List<BookResponse>>builder()
                         .success(true)
                         .data(bookService.createAll(dtoList))
                         .message("Book created successfully")
@@ -67,7 +67,7 @@ public class BookController {
             @PathVariable @NotBlank String id
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                ApiResponse.<BookResponseDTO>builder()
+                ApiResponse.<BookResponse>builder()
                         .success(true)
                         .data(bookService.findById(id))
                         .message("Book fetched successfully")
@@ -80,7 +80,7 @@ public class BookController {
             @PathVariable @NotBlank String isbn
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                ApiResponse.<BookResponseDTO>builder()
+                ApiResponse.<BookResponse>builder()
                         .success(true)
                         .data(bookService.findByIsbn(isbn))
                         .message("Book fetched successfully")
@@ -91,11 +91,11 @@ public class BookController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<?>> update(
             @PathVariable @NotBlank String id,
-            @RequestBody @Valid BookRequestDTO dto
+            @RequestBody @Valid BookRequest dto
 
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                ApiResponse.<BookResponseDTO>builder()
+                ApiResponse.<BookResponse>builder()
                         .success(true)
                         .data(bookService.update(id, dto))
                         .message("Book updated successfully")
@@ -123,7 +123,7 @@ public class BookController {
             @PathVariable @NotBlank String id
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                ApiResponse.<BookResponseDTO>builder()
+                ApiResponse.<BookResponse>builder()
                         .success(true)
                         .data(bookService.changeBookStatus(id, false))
                         .message("Book deactivated successfully")
@@ -133,10 +133,10 @@ public class BookController {
 
     @PostMapping("/search")
     public ResponseEntity<ApiResponse<?>> searchBooks(
-            @RequestBody @Valid BookSearchRequestDTO searchRequest
+            @RequestBody @Valid BookSearchRequest searchRequest
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                ApiResponse.<PageResponse<BookResponseDTO>>builder()
+                ApiResponse.<PageResponse<BookResponse>>builder()
                         .success(true)
                         .data(bookService.searchBooksByFilters(searchRequest))
                         .message("Books fetched successfully")
@@ -150,7 +150,7 @@ public class BookController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        ApiResponse.<BookStatisticsResponseDTO>builder()
+                        ApiResponse.<BookStatisticsResponse>builder()
                                 .data(bookService.getBookStatistics())
                                 .message("Active Books Count Retrieved Successfully")
                                 .success(true)
