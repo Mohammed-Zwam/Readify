@@ -43,15 +43,23 @@ public class User implements UserDetails {
 
     private LocalDateTime lastLogin;
 
+    @PrePersist
+    public void prePersist() {
+        if (lastLogin == null) {
+            lastLogin = LocalDateTime.now();
+        }
+    }
+
     @CreationTimestamp
     private LocalDateTime createdAt;
+
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override

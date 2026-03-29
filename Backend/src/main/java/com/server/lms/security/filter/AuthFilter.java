@@ -21,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
+    private static final Set<String> PUBLIC_PATHS = Set.of("/api/auth");
 
     @Override
     protected void doFilterInternal(
@@ -36,7 +38,10 @@ public class AuthFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         String jwtTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (jwtTokenHeader != null && jwtTokenHeader.startsWith("Bearer ")) {
+
+        String path = request.getRequestURI();
+
+       if (PUBLIC_PATHS.stream().noneMatch(path::startsWith) && jwtTokenHeader != null && jwtTokenHeader.startsWith("Bearer ")) {
             String jwtToken = jwtTokenHeader.substring("Bearer ".length());
 
             if (jwtUtils.isTokenSignatureCorrect(jwtToken)) {
@@ -59,7 +64,6 @@ public class AuthFilter extends OncePerRequestFilter {
                     }
                 }
             }
-
         }
 
         filterChain.doFilter(request, response);

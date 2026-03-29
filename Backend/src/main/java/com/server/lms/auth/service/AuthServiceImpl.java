@@ -1,10 +1,11 @@
 package com.server.lms.auth.service;
 
 import com.server.lms._shared.email.EmailService;
+import com.server.lms._shared.email.EmailTemplate;
 import com.server.lms.auth.dto.request.LoginRequest;
 import com.server.lms.auth.dto.response.AuthResponse;
 import com.server.lms.security.utils.JwtUtils;
-import com.server.lms.user.dto.UserDTO;
+import com.server.lms.user.dto.request.UserRequest;
 import com.server.lms.user.entity.PasswordResetToken;
 import com.server.lms.user.entity.User;
 import com.server.lms.user.mapper.UserMapper;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -53,6 +55,11 @@ public class AuthServiceImpl implements AuthService {
         );
 
         var user = userService.findEntityByEmail(loginRequest.getEmail());
+
+        var lastLogin = LocalDateTime.now();
+        userService.updateLastLogin(user.getId(), LocalDateTime.now());
+        user.setLastLogin(lastLogin);
+
         var jwtToken = jwtUtils.generateToken(user);
 
         return AuthResponse.builder()
@@ -63,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse signup(UserDTO userDTO) {
+    public AuthResponse signup(UserRequest userDTO) {
 
         User user = userService.create(userDTO);
 
@@ -107,9 +114,15 @@ public class AuthServiceImpl implements AuthService {
 
         String resetLink = resetPasswordUrl + generatedToken;
 
-        String emailSubject = "Password Reset Request";
-        String emailBody = "You requested to reset your password, <a href='" + resetLink + "'>Click Here</a> to reset (expired after " + expiration + " minutes)";
-        emailService.sendEmail(email, emailSubject, emailBody);
+        String emailSubject = "Password Reset Requested | Borrowly";
+
+        Map<String, Object> variables = Map.of(
+                "name", user.getName(),
+                "resetLink", resetLink,
+                "expiration", expiration
+        );
+
+        emailService.sendEmail(email, emailSubject, EmailTemplate.RESET_PASSWORD, variables);
     }
 
     @Override

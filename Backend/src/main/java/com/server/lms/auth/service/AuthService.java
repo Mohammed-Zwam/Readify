@@ -2,12 +2,12 @@ package com.server.lms.auth.service;
 
 import com.server.lms.auth.dto.request.LoginRequest;
 import com.server.lms.auth.dto.response.AuthResponse;
-import com.server.lms.user.dto.UserDTO;
+import com.server.lms.user.dto.request.UserRequest;
 
 public interface AuthService {
     AuthResponse login(LoginRequest loginRequest);
 
-    AuthResponse signup(UserDTO user);
+    AuthResponse signup(UserRequest user);
 
     void createPasswordResetToken(String email);
 

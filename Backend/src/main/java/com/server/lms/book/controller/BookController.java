@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class BookController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<?>> createBook(
             @RequestBody @Valid BookRequest dto
     ) {
@@ -49,6 +51,7 @@ public class BookController {
 
 
     @PostMapping("/batch")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<?>> createBooks(
             @RequestBody @Valid List<BookRequest> dtoList
     ) {
@@ -89,6 +92,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<?>> update(
             @PathVariable @NotBlank String id,
             @RequestBody @Valid BookRequest dto
@@ -104,6 +108,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<?>> delete(
             @PathVariable @NotBlank String id
     ) {
@@ -119,6 +124,7 @@ public class BookController {
 
 
     @PatchMapping("/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<?>> deactivate(
             @PathVariable @NotBlank String id
     ) {

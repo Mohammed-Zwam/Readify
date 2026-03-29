@@ -1,8 +1,8 @@
 package com.server.lms._shared.email;
 
-import org.springframework.stereotype.Service;
+import java.util.Map;
 
 public interface EmailService {
-    void sendEmail(String to, String subject, String body);
+    void sendEmail(String to, String subject, EmailTemplate templateName, Map<String, Object> variables);
 
 }

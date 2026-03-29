@@ -1,6 +1,6 @@
 package com.server.lms.auth.dto.response;
 
-import com.server.lms.user.dto.UserDTO;
+import com.server.lms.user.dto.response.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class AuthResponse {
     private String token;
     private String title;
-    private UserDTO user;
+    private UserResponse user;
 }

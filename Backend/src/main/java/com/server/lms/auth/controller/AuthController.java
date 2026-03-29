@@ -6,7 +6,7 @@ import com.server.lms.auth.dto.request.LoginRequest;
 import com.server.lms.auth.dto.request.RestPasswordRequest;
 import com.server.lms.auth.dto.response.AuthResponse;
 import com.server.lms.auth.service.AuthService;
-import com.server.lms.user.dto.UserDTO;
+import com.server.lms.user.dto.request.UserRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<?>> signup(
-            @RequestBody @Valid UserDTO userDTO
+            @RequestBody @Valid UserRequest userDTO
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
